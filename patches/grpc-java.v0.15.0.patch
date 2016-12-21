@@ -1,0 +1,44 @@
+diff --git compiler/build.gradle compiler/build.gradle
+index e368c36..b488f1c 100644
+--- compiler/build.gradle
++++ compiler/build.gradle
+@@ -47,6 +47,8 @@ model {
+       }
+     }
+     gcc(Gcc) {
++      target("linux_arm-v7")
++      target("aarch_64")
+     }
+     clang(Clang) {
+     }
+@@ -59,11 +61,17 @@ model {
+     x86_64 {
+       architecture "x86_64"
+     }
++    armv7l {
++      architecture "armv7l"
++    }
++    aarch_64 {
++      architecture "aarch_64"
++    }
+   }
+ 
+   components {
+     java_plugin(NativeExecutableSpec) {
+-      if (arch in ['x86_32', 'x86_64']) {
++      if (arch in ['x86_32', 'x86_64', "armv7l", "aarch_64"]) {
+         // If arch is not within the defined platforms, we do not specify the
+         // targetPlatform so that Gradle will choose what is appropriate.
+         targetPlatform arch
+@@ -90,9 +98,8 @@ model {
+           // Link protoc, protobuf, libgcc and libstdc++ statically.
+           // Link other (system) libraries dynamically.
+           // Clang under OSX doesn't support these options.
+-          linker.args "-Wl,-Bstatic", "-lprotoc", "-lprotobuf", "-static-libgcc",
+-                      "-static-libstdc++",
+-                      "-Wl,-Bdynamic", "-lpthread", "-s"
++          linker.args "-static", "-lprotoc", "-lprotobuf", "-static-libgcc", "-static-libstdc++",
++                      "-pthread", "-s"
+         }
+         addEnvArgs("LDFLAGS", linker.args)
+       } else if (toolChain in VisualCpp) {

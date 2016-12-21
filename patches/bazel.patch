@@ -1,0 +1,90 @@
+diff --git a/compile.sh b/compile.sh
+index 53fc412..11035d9 100755
+--- a/compile.sh
++++ b/compile.sh
+@@ -27,7 +27,7 @@ cd "$(dirname "$0")"
+ # Set the default verbose mode in buildenv.sh so that we do not display command
+ # output unless there is a failure.  We do this conditionally to offer the user
+ # a chance of overriding this in case they want to do so.
+-: ${VERBOSE:=no}
++: ${VERBOSE:=yes}
+
+ source scripts/bootstrap/buildenv.sh
+
+diff --git a/scripts/bootstrap/compile.sh b/scripts/bootstrap/compile.sh
+index 77372f0..657b254 100755
+--- a/scripts/bootstrap/compile.sh
++++ b/scripts/bootstrap/compile.sh
+@@ -48,6 +48,7 @@ linux)
+   else
+     if [ "${MACHINE_IS_ARM}" = 'yes' ]; then
+       PROTOC=${PROTOC:-third_party/protobuf/protoc-linux-arm32.exe}
++      GRPC_JAVA_PLUGIN=${GRPC_JAVA_PLUGIN:-third_party/grpc/protoc-gen-grpc-java-0.15.0-linux-arm32.exe}
+     else
+       PROTOC=${PROTOC:-third_party/protobuf/protoc-linux-x86_32.exe}
+       GRPC_JAVA_PLUGIN=${GRPC_JAVA_PLUGIN:-third_party/grpc/protoc-gen-grpc-java-0.15.0-linux-x86_32.exe}
+@@ -150,7 +151,7 @@ function java_compilation() {
+
+   run "${JAVAC}" -classpath "${classpath}" -sourcepath "${sourcepath}" \
+       -d "${output}/classes" -source "$JAVA_VERSION" -target "$JAVA_VERSION" \
+-      -encoding UTF-8 "@${paramfile}"
++      -encoding UTF-8 "@${paramfile}" -J-Xmx500M
+
+   log "Extracting helper classes for $name..."
+   for f in ${library_jars} ; do
+diff --git a/src/main/java/com/google/devtools/build/lib/util/CPU.java b/src/main/java/com/google/devtools/build/lib/util/CPU.java
+index 41af4b1..4d80610 100644
+--- a/src/main/java/com/google/devtools/build/lib/util/CPU.java
++++ b/src/main/java/com/google/devtools/build/lib/util/CPU.java
+@@ -26,7 +26,7 @@ public enum CPU {
+   X86_32("x86_32", ImmutableSet.of("i386", "i486", "i586", "i686", "i786", "x86")),
+   X86_64("x86_64", ImmutableSet.of("amd64", "x86_64", "x64")),
+   PPC("ppc", ImmutableSet.of("ppc", "ppc64", "ppc64le")),
+-  ARM("arm", ImmutableSet.of("arm", "armv7l")),
++  ARM("arm", ImmutableSet.of("arm", "armv7l", "aarch64")),
+   UNKNOWN("unknown", ImmutableSet.<String>of());
+
+   private final String canonicalName;
+diff --git a/third_party/grpc/BUILD b/third_party/grpc/BUILD
+index 2ba07e3..c7925ff 100644
+--- a/third_party/grpc/BUILD
++++ b/third_party/grpc/BUILD
+@@ -29,7 +29,7 @@ filegroup(
+         "//third_party:darwin": ["protoc-gen-grpc-java-0.15.0-osx-x86_64.exe"],
+         "//third_party:k8": ["protoc-gen-grpc-java-0.15.0-linux-x86_64.exe"],
+         "//third_party:piii": ["protoc-gen-grpc-java-0.15.0-linux-x86_32.exe"],
+-        "//third_party:arm": ["protoc-gen-grpc-java-0.15.0-linux-x86_32.exe"],
++        "//third_party:arm": ["protoc-gen-grpc-java-0.15.0-linux-arm32.exe"],
+         "//third_party:freebsd": ["protoc-gen-grpc-java-0.15.0-linux-x86_32.exe"],
+     }),
+ )
+diff --git a/third_party/protobuf/BUILD b/third_party/protobuf/BUILD
+index 203fe51..4c2a316 100644
+--- a/third_party/protobuf/BUILD
++++ b/third_party/protobuf/BUILD
+@@ -28,6 +28,7 @@ filegroup(
+         "//third_party:darwin": ["protoc-osx-x86_32.exe"],
+         "//third_party:k8": ["protoc-linux-x86_64.exe"],
+         "//third_party:piii": ["protoc-linux-x86_32.exe"],
++        "//third_party:arm": ["protoc-linux-arm32.exe"],
+         "//third_party:freebsd": ["protoc-linux-x86_32.exe"],
+     }),
+ )
+diff --git a/tools/cpp/cc_configure.bzl b/tools/cpp/cc_configure.bzl
+index aeb0715..688835d 100644
+--- a/tools/cpp/cc_configure.bzl
++++ b/tools/cpp/cc_configure.bzl
+@@ -150,7 +150,12 @@ def _get_cpu_value(repository_ctx):
+     return "x64_windows"
+   # Use uname to figure out whether we are on x86_32 or x86_64
+   result = repository_ctx.execute(["uname", "-m"])
+-  return "k8" if result.stdout.strip() in ["amd64", "x86_64", "x64"] else "piii"
++  machine = result.stdout.strip()
++  if machine in ["arm", "armv7l", "aarch64"]:
++   return "arm"
++  elif machine in ["amd64", "x86_64", "x64"]:
++   return "k8"
++  return "piii"
+
+
+ _INC_DIR_MARKER_BEGIN = "#include <...>"
