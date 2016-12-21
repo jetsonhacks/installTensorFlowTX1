@@ -11,3 +11,4 @@ cp ../protobuf/src/protoc third_party/protobuf/protoc-linux-arm32.exe
 cp ../grpc-java/compiler/build/exe/java_plugin/protoc-gen-grpc-java third_party/grpc/protoc-gen-grpc-java-0.15.0-linux-arm32.exe
 patch -p1 < $INSTALL_DIR/patches/bazel.patch
 ./compile.sh 
+sudo cp output/bazel /usr/local/bin
