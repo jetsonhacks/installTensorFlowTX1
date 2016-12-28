@@ -15,25 +15,37 @@ Before installing TensorFlow, a swap file should be created (minimum of 8GB reco
 
 Note: Most of this procedure was derived from the thread: https://github.com/tensorflow/tensorflow/issues/851
 
-TensorFlow is built in the following order:
+TensorFlow should be built in the following order:
 
-#### installDependencies.sh
-Installs Java and other dependencies needed.
+#### installPrerequisites.sh
+Installs Java and other dependencies needed. Also builds:
 
-#### buildProtobuf.sh
-Two versions of protobuf are compiled. The first (v3.0.0-beta-3) is needed to build grpc-java. This version ends up being installed in $HOME/lib and $HOME/bin. The second version (v3.0.0-beta-2) is used to build bazel
+##### Protobuf
+Two versions of protobuf are compiled. The first (v3.1.0) is needed to build grpc-java. This version ends up being installed in $HOME/lib and $HOME/bin. The second version (v3.0.0-beta-2) is used to build bazel
 
-#### buildGRPC.sh
-grpc-java v0.15.0 requires v3.0.0-beta-3 of protobuf. A patch is applied for aarch64.
+##### grpc-java
+grpc-java v0.15.0 requires > v3.0.0-beta-3 of protobuf. A patch is applied for aarch64.
 
-#### buildBazel.sh
+##### Bazel
 Builds version 0.3.2. Includes patches for compiling under aarch64.
 
-#### installTensorFlow.sh
+#### cloneTensorFlow.sh
 Git clones r0.11 from the TensorFlow repository and patches the source code for aarch64
 
 #### setTensorFlowEV.sh
 Sets up the TensorFlow environment variables. This script will ask for the default python library path.
 
 #### buildTensorFlow.sh
-Builds TensorFlow. Due to what appears to be memory pressure, sometimes this build script needs to be run more than once on failure.
+Builds TensorFlow.
+
+#### packageTensorFlow.sh
+Once TensorFlow has finished building, this script may be used to create a 'wheel' file, a package for installing with Python. The wheel file will be in the $HOME directory, tensorflow-0.11.0-py2-none-any.whl
+
+#### Install wheel file
+pip install $HOME/tensorflow-0.11.0-py2-none-any.whl
+
+#### Test
+Run a simple TensorFlow example for the initial sanity check:
+cd $HOME/tensorflow
+time python tensorflow/models/image/mnist/convolutional.py 
+
