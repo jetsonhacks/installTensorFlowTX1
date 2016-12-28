@@ -1,7 +1,5 @@
 # installTensorFlowTX1
-December 20, 2016
-
-Still under construction
+December 28, 2016
 
 Install TensorFlow r0.11 on NVIDIA Jetson TX1 Development Kit
 
@@ -46,6 +44,8 @@ pip install $HOME/tensorflow-0.11.0-py2-none-any.whl
 
 #### Test
 Run a simple TensorFlow example for the initial sanity check:
+
 cd $HOME/tensorflow
+
 time python tensorflow/models/image/mnist/convolutional.py 
 
