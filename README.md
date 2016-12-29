@@ -6,7 +6,7 @@ Install TensorFlow r0.11 on NVIDIA Jetson TX1 Development Kit
 Jetson TX1 is flashed with JetPack 2.3.1 which installs:
 * L4T 24.2.1 an Ubuntu 16.04 64-bit variant (aarch64)
 * CUDA 8.0
-* cuDNN 5.1
+* cuDNN 5.1.5
 
 ### Installation
 Before installing TensorFlow, a swap file should be created (minimum of 8GB recommended). The Jetson TX1 does not have enough physical memory to compile TensorFlow. Also, if TensorFlow is being compiled on the built-in 16GB flash drive, a standard JetPack installation may consume too much room on the drive. Extraneous files will have to be removed. Eliminating the .deb file in the home directory appears to be enough to allow TensorFlow to build.
