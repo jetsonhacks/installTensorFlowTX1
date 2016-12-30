@@ -9,7 +9,7 @@ Jetson TX1 is flashed with JetPack 2.3.1 which installs:
 * cuDNN 5.1.5
 
 ### Installation
-Before installing TensorFlow, a swap file should be created (minimum of 8GB recommended). The Jetson TX1 does not have enough physical memory to compile TensorFlow. Also, if TensorFlow is being compiled on the built-in 16GB flash drive, a standard JetPack installation may consume too much room on the drive. Extraneous files will have to be removed. Eliminating the .deb file in the home directory appears to be enough to allow TensorFlow to build.
+Before installing TensorFlow, a swap file should be created (minimum of 8GB recommended). The Jetson TX1 does not have enough physical memory to compile TensorFlow. Also, if TensorFlow is being compiled on the built-in 16GB flash drive, a standard JetPack installation may consume too much room on the drive to successfully build TensorFlow. Extraneous files will need to be removed. Eliminating the .deb files in the home directory appears to be enough to allow TensorFlow to build. Successful builds tend to have more than 5.5GB free. Also, for a successful build it is recommended to set local lib using the included script setLocalLib.sh, as grpc-java in particular seems to run into issues if it /usr/local/lib is not in the path.
 
 Note: Most of this procedure was derived from the thread: https://github.com/tensorflow/tensorflow/issues/851
 
