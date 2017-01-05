@@ -3,6 +3,8 @@ December 28, 2016
 
 Install TensorFlow r0.11 on NVIDIA Jetson TX1 Development Kit
 
+Full article and video on installation available at: http://www.jetsonhacks.com/2016/12/30/tensorflow-nvidia-jetson-tx1-development-kit/
+
 Jetson TX1 is flashed with JetPack 2.3.1 which installs:
 * L4T 24.2.1 an Ubuntu 16.04 64-bit variant (aarch64)
 * CUDA 8.0
