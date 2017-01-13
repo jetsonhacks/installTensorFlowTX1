@@ -23,7 +23,7 @@ If you attempted to run buildTensorFlow.sh before patching, you will need to rep
 
 /home/ubuntu/.cache/bazel/_bazel_ubuntu/<id>/external
 
-with the one in this directory. Ideally, you would save the folder after it is generatred, and before it gets overwritten. Note: This may work, or it may not. There is a 'bin' directory which has symbolic pointers which may not match your system. If that is the case, you will have to run 'setTensorFlowEV.sh' and 'buildTensorFlow.sh' again and rebuild everything.
+with the one in this directory. Ideally, you would save the folder after it is generated, and before it gets overwritten. Note: This may work, or it may not. There is a 'bin' directory which has symbolic pointers which may not match your system. If that is the case, you will have to run 'setTensorFlowEV.sh' and 'buildTensorFlow.sh' again and rebuild everything.
 
 STEP 2
 
