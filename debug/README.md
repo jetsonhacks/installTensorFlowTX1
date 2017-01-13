@@ -27,7 +27,7 @@ with the one in this directory. Ideally, you would save the folder after it is g
 
 STEP 2
 
-$ ./exportEV.sh
+$ source exportEV.sh
 
 Which exports the needed TF CUDA Environment variables
 
