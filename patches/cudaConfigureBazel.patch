@@ -1,0 +1,12 @@
+diff --git a/third_party/gpus/cuda_configure.bzl b/third_party/gpus/cuda_configure.bzl
+index 31bf8cc..775d7da 100644
+--- a/third_party/gpus/cuda_configure.bzl
++++ b/third_party/gpus/cuda_configure.bzl
+@@ -508,7 +508,6 @@ def _cuda_autoconf_impl(repository_ctx):
+ 
+ cuda_configure = repository_rule(
+     implementation = _cuda_autoconf_impl,
+-    local = True,
+ )
+ """Detects and configures the local CUDA toolchain.
+ 

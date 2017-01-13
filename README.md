@@ -1,5 +1,6 @@
 # installTensorFlowTX1
-December 28, 2016
+December 28, 2016 
+Last modified Jan 12, 2017
 
 Install TensorFlow r0.11 on NVIDIA Jetson TX1 Development Kit
 
@@ -50,4 +51,8 @@ Run a simple TensorFlow example for the initial sanity check:
 $ cd $HOME/tensorflow
 
 $ time python tensorflow/models/image/mnist/convolutional.py 
+
+#### Build Issues
+
+For various reasons, the build may fail. The 'debug' folder contains instructions on how to resume an incremental build. 
 
