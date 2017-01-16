@@ -1,1 +1,0 @@
-/usr/local/cuda-8.0/include/sobol_direction_vectors.h

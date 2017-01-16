@@ -1,1 +1,0 @@
-/usr/local/cuda-8.0/include/npps_arithmetic_and_logical_operations.h

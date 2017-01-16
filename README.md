@@ -1,6 +1,7 @@
 # installTensorFlowTX1
 December 28, 2016 
-Last modified Jan 12, 2017
+
+Last modified Jan 15, 2017
 
 Install TensorFlow r0.11 on NVIDIA Jetson TX1 Development Kit
 
@@ -54,5 +55,17 @@ $ time python tensorflow/models/image/mnist/convolutional.py
 
 #### Build Issues
 
-For various reasons, the build may fail. The 'debug' folder contains instructions on how to resume an incremental build. 
+For various reasons, the build may fail. The 'debug' folder contains a version of the buildTensorFlow.sh script which is more verbose in the way that it describes both what it is doing and errors it encounters. See the debug directory for more details.
 
+#### Notes
+As of this writing (Jan 15, 2017) the TensorFlow repository has an issue which does not allow incremental compilation to work correctly. This is due to an issue in the file:
+
+tensorflow/third_party/gpus/cuda_configure.bzl
+
+Where the rule:
+
+cuda_configure = repository_rule( implementation = _cuda_autoconf_impl, local = True, )
+
+forces Bazel to always rebuild the CUDA configuration, which in turn foobars the incremental build process. The cloneTensorFlow.sh script patches the file to remove the local = True statement. Additionally, buildTensorFlow.sh sets TensorFlow environment variables to reflect the CUDA structure of the Jetson TX1.
+
+Since v0.11 was published, the location of the zlib library being used has moved. This is also taken into account by the cloneTensorFlow.sh script, which patches the library location.
