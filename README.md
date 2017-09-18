@@ -1,71 +1,116 @@
 # installTensorFlowTX1
-December 28, 2016 
+September 17, 2017
+JetsonHacks
 
-Last modified Jan 15, 2017
+Install TensorFlow v1.3 on NVIDIA Jetson TX1 Development Kit
 
-Install TensorFlow r0.11 on NVIDIA Jetson TX1 Development Kit
-
-Full article and video on installation available at: http://www.jetsonhacks.com/2016/12/30/tensorflow-nvidia-jetson-tx1-development-kit/
-
-Jetson TX1 is flashed with JetPack 2.3.1 which installs:
-* L4T 24.2.1 an Ubuntu 16.04 64-bit variant (aarch64)
+Jetson TX1 is flashed with JetPack 3.1 which installs:
+* L4T 28.1 an Ubuntu 16.04 64-bit variant (aarch64)
 * CUDA 8.0
-* cuDNN 5.1.5
+* cuDNN 6.0
 
 ### Installation
-Before installing TensorFlow, a swap file should be created (minimum of 8GB recommended). The Jetson TX1 does not have enough physical memory to compile TensorFlow. Also, if TensorFlow is being compiled on the built-in 16GB flash drive, a standard JetPack installation may consume too much room on the drive to successfully build TensorFlow. Extraneous files will need to be removed. Eliminating the .deb files in the home directory appears to be enough to allow TensorFlow to build. Successful builds tend to have more than 5.5GB free. Also, for a successful build it is recommended to set local lib using the included script setLocalLib.sh, as grpc-java in particular seems to run into issues if it /usr/local/lib is not in the path.
+Before installing TensorFlow, a swap file should be created (minimum of 8GB recommended). The Jetson TX1 does not have enough physical memory to compile TensorFlow. 
 
-Note: Most of this procedure was derived from the thread: https://github.com/tensorflow/tensorflow/issues/851
+Note: L4T 28.1 does not have the swap file option selected in the stock kernel, so a custom kernel must be used with swap enabled. The option is 'Support for paging of anonymous memory (swap)'. The kernel configuration symbols are CONFIG_SWAP and SWAP.
 
+The eMMC does not have enough room for a properly sized swap file, the swap file should be located on a different device. A SATA drive is probably the fastest, followed by a USB drive then SD Card. The swap file is not needed after the build. Also, the swap file should be over 4GB.
+
+There is a convenience script for building a swap file. For example, to build a 8GB swapfile:
+
+$ ./createSwapfile.sh -d [file location] -s 8
+
+After TensorFlow has finished building, the swap file is no longer needed and may be removed.
+
+These scripts support either builds for Python 2.7 or Python 3.5.
 TensorFlow should be built in the following order:
 
+## For Python 2.7
+
 #### installPrerequisites.sh
-Installs Java and other dependencies needed. Also builds:
-
-##### Protobuf
-Two versions of protobuf are compiled. The first (v3.1.0) is needed to build grpc-java. This version ends up being installed in $HOME/lib and $HOME/bin. The second version (v3.0.0-beta-2) is used to build bazel
-
-##### grpc-java
-grpc-java v0.15.0 requires > v3.0.0-beta-3 of protobuf. A patch is applied for aarch64.
-
-##### Bazel
-Builds version 0.3.2. Includes patches for compiling under aarch64.
+Installs Java and other dependencies needed. Also builds Bazel version 0.5.2.
 
 #### cloneTensorFlow.sh
-Git clones r0.11 from the TensorFlow repository and patches the source code for aarch64
+Git clones v1.3.0 from the TensorFlow repository and patches the source code for aarch64
 
 #### setTensorFlowEV.sh
-Sets up the TensorFlow environment variables. This script will ask for the default python library path.
+Sets up the TensorFlow environment variables. This script will ask for the default python library path. There are many settings to chose from, the script picks the usual suspects. Uses python 2.7.
+
+## For Python 3.5
+
+#### installPrerequisitesPy3.sh
+Installs Java and other dependencies needed. Also builds Bazel version 0.5.2.
+
+#### cloneTensorFlow.sh
+Git clones v1.3.0 from the TensorFlow repository and patches the source code for aarch64
+
+#### setTensorFlowEVPy3.sh
+Sets up the TensorFlow environment variables. This script will ask for the default python library path. There are many settings to chose from, the script picks the usual suspects. Uses python 3.5.
+
+## Build TensorFlow
+Once the prerequisites have been installed and the environment configured, it is time to build TensorFlow itself.
 
 #### buildTensorFlow.sh
 Builds TensorFlow.
 
 #### packageTensorFlow.sh
-Once TensorFlow has finished building, this script may be used to create a 'wheel' file, a package for installing with Python. The wheel file will be in the $HOME directory, tensorflow-0.11.0-py2-none-any.whl
+Once TensorFlow has finished building, this script may be used to create a 'wheel' file, a package for installing with Python. The wheel file will be in the $HOME directory.
 
 #### Install wheel file
-$ pip install $HOME/tensorflow-0.11.0-py2-none-any.whl
+For Python 2.X
 
-#### Test
-Run a simple TensorFlow example for the initial sanity check:
+$ pip install $HOME/<em>wheel file</em>
 
-$ cd $HOME/tensorflow
+For Python 3.X
 
-$ time python tensorflow/models/image/mnist/convolutional.py 
+$ pip3 install $HOME/<em>wheel file</em> 
 
-#### Build Issues
 
-For various reasons, the build may fail. The 'debug' folder contains a version of the buildTensorFlow.sh script which is more verbose in the way that it describes both what it is doing and errors it encounters. See the debug directory for more details.
+### Notes
+This TensorFlow installation procedure was derived from these discussion threads: 
 
-#### Notes
-As of this writing (Jan 15, 2017) the TensorFlow repository has an issue which does not allow incremental compilation to work correctly. This is due to an issue in the file:
+<ul>
+<li>https://github.com/tensorflow/tensorflow/issues/851</li>
+<li>http://stackoverflow.com/questions/39783919/tensorflow-on-nvidia-tx1/</li>
+<li>https://devtalk.nvidia.com/default/topic/1000717/tensorflow-on-jetson-tx2/</li>
+<li>https://github.com/tensorflow/tensorflow/issues/9697</li>
+</ul>
 
-tensorflow/third_party/gpus/cuda_configure.bzl
+### Release Notes
+September 2017
+* L4T 28.1 (JetPack 3.1)
+* TensorFlow 1.3
+* CUDA 8.0
+* cuDNN 6.0.12
 
-Where the rule:
+December 2016
+* Initial Release
+* L4T 24.2.1
+* TensorFlow 0.11
+* CUDA 8.0
+* cuDNN 5.1.5
 
-cuda_configure = repository_rule( implementation = _cuda_autoconf_impl, local = True, )
 
-forces Bazel to always rebuild the CUDA configuration, which in turn foobars the incremental build process. The cloneTensorFlow.sh script patches the file to remove the local = True statement. Additionally, buildTensorFlow.sh sets TensorFlow environment variables to reflect the CUDA structure of the Jetson TX1.
 
-Since v0.11 was published, the location of the zlib library being used has moved. This is also taken into account by the cloneTensorFlow.sh script, which patches the library location.
+## License
+MIT License
+
+Copyright (c) 2017 Jetsonhacks
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

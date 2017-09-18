@@ -2,7 +2,7 @@
 # NVIDIA Jetson TX1
 # Install TensorFlow dependencies and prerequisites
 # Install Java and other dependencies by apt-get
-./scripts/installDependencies.sh
+./scripts/installDependenciesPy3.sh
 ./scripts/installBazel.sh
 
 
