@@ -9,7 +9,12 @@ Jetson TX1 is flashed with JetPack 3.1 which installs:
 * CUDA 8.0
 * cuDNN 6.0
 
-### Installation
+## Pre-built installation
+If you are only interested in installing Tensorflow on the TX1, not building from source, pre-built wheel files are available here: https://github.com/jetsonhacks/installTensorFlowJetsonTX 
+
+If you are interested in building from source, read on.
+
+### Preparation
 Before installing TensorFlow, a swap file should be created (minimum of 8GB recommended). The Jetson TX1 does not have enough physical memory to compile TensorFlow. 
 
 Note: L4T 28.1 does not have the swap file option selected in the stock kernel, so a custom kernel must be used with swap enabled. The option is 'Support for paging of anonymous memory (swap)'. The kernel configuration symbols are CONFIG_SWAP and SWAP.
